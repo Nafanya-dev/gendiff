@@ -15,7 +15,7 @@ def get_stylish_line(data):
             desc = 'unchanged'
         elif desc == 'changed':
             res_string = (f"  {chars['removed']} {key}: {value[0]}\n"
-            f"  {chars['add']} {key}: {value[1]}\n")
+                          f"  {chars['add']} {key}: {value[1]}\n")
         else:
             res_string = f"  {chars[desc]} {key}: {value}\n"
         result += res_string

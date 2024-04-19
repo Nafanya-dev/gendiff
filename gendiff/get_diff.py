@@ -8,8 +8,9 @@ def get_diff(file1, file2):
         old_value = check_value(file1.get(key))
         new_value = check_value(file2.get(key))
 
-        if type(old_value) == dict and type(new_value) == dict:
-            result[key] = {'desc': 'nested', 'value': get_diff(old_value, new_value)}
+        if isinstance(old_value, dict) and isinstance(new_value, dict):
+            result[key] = {'desc': 'nested',
+                           'value': get_diff(old_value, new_value)}
         elif key in old_keys and key not in new_keys:
             result[key] = {'desc': 'removed', 'value': old_value}
         elif key in new_keys and key not in old_keys:
@@ -26,7 +27,7 @@ def get_diff(file1, file2):
 
 def check_value(value):
     result = value
-    if type(value) == bool:
+    if isinstance(value, bool):
         string_value = str(value)
         result = string_value[0].lower() + string_value[1:]
     return result
