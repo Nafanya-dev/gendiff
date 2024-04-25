@@ -1,13 +1,35 @@
 from gendiff import generate_diff
+import yaml
 import pytest
 
 
 @pytest.fixture
 def flat_files():
-    first_path = 'tests/fixtures/file1.json'
-    second_path = 'tests/fixtures/file2.json'
-    return first_path, second_path
+    paths = {
+        'first_path_json': 'tests/fixtures/file1.json',
+        'second_path_json': 'tests/fixtures/file2.json',
+        'first_path_yml': 'tests/fixtures/file1.yml',
+        'second_path_yml': 'tests/fixtures/file2.yml',
+        'check_flat_json': open('tests/fixtures/check_json.txt').read(),
+        'check_flat_yml': open('tests/fixtures/check_yml.txt').read()
+    }
+    return paths
 
-def test_generate_diff(flat_files):
-    result = generate_diff(flat_files[0], flat_files[1])
-    assert result == open('tests/fixtures/check_json.txt').read()
+
+@pytest.fixture
+def deep_files():
+    paths = {
+        'first_path_yaml': 'tests/fixtures/file1.yaml',
+        'second_path_yaml': 'tests/fixtures/file2.yaml',
+        'check_deep_yaml': open('tests/fixtures/check_yaml.txt').read()
+    }
+    return paths
+
+
+def test_generate_diff(flat_files, deep_files):
+    result_flat_json = generate_diff(flat_files['first_path_json'], flat_files['second_path_json'])
+    result_flat_yml = generate_diff(flat_files['first_path_yml'], flat_files['second_path_yml'])
+    assert result_flat_json == flat_files['check_flat_json']
+    assert result_flat_yml == flat_files['check_flat_yml']
+    result_deep_yaml = generate_diff(deep_files['first_path_yaml'], deep_files['second_path_yaml'])
+    assert result_deep_yaml == deep_files['check_deep_yaml']
