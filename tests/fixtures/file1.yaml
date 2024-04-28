@@ -7,7 +7,7 @@ common:
       wow: ''
     key: value
 group1:
-  baz: 0
+  baz: bas
   foo: bar
   nest:
     key: value

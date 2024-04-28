@@ -5,8 +5,8 @@ def get_diff(file1, file2):
     result = {}
 
     for key in keys:
-        old_value = check_value(file1.get(key))
-        new_value = check_value(file2.get(key))
+        old_value = check_bool_value(file1.get(key))
+        new_value = check_bool_value(file2.get(key))
 
         if isinstance(old_value, dict) and isinstance(new_value, dict):
             result[key] = {'desc': 'nested',
@@ -25,7 +25,7 @@ def get_diff(file1, file2):
     return result
 
 
-def check_value(value):
+def check_bool_value(value):
     result = value
     if isinstance(value, bool):
         string_value = str(value)

@@ -21,15 +21,20 @@ def deep_files():
     paths = {
         'first_path_yaml': 'tests/fixtures/file1.yaml',
         'second_path_yaml': 'tests/fixtures/file2.yaml',
-        'check_deep_yaml': open('tests/fixtures/check_yaml.txt').read()
+        'check_deep_yaml_stylish': open('tests/fixtures/check_yaml_stylish.txt').read(),
+        'check_deep_yaml_plain': open('tests/fixtures/check_yaml_plain.txt').read()
     }
     return paths
 
 
 def test_generate_diff(flat_files, deep_files):
-    result_flat_json = generate_diff(flat_files['first_path_json'], flat_files['second_path_json'])
-    result_flat_yml = generate_diff(flat_files['first_path_yml'], flat_files['second_path_yml'])
-    assert result_flat_json == flat_files['check_flat_json']
-    assert result_flat_yml == flat_files['check_flat_yml']
-    result_deep_yaml = generate_diff(deep_files['first_path_yaml'], deep_files['second_path_yaml'])
-    assert result_deep_yaml == deep_files['check_deep_yaml']
+    result_flat_stylish_json = generate_diff(flat_files['first_path_json'], flat_files['second_path_json'])
+    result_flat_stylish_yml = generate_diff(flat_files['first_path_yml'], flat_files['second_path_yml'])
+    assert result_flat_stylish_json == flat_files['check_flat_json']
+    assert result_flat_stylish_yml == flat_files['check_flat_yml']
+
+    result_deep_yaml_stylish = generate_diff(deep_files['first_path_yaml'], deep_files['second_path_yaml'])
+    assert result_deep_yaml_stylish == deep_files['check_deep_yaml_stylish']
+
+    result_deep_yaml_plain = generate_diff(deep_files['first_path_yaml'], deep_files['second_path_yaml'], 'plain')
+    assert result_deep_yaml_plain == deep_files['check_deep_yaml_plain']

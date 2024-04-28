@@ -13,6 +13,7 @@ def get_stylish_line(data, count_spaces=2):
                  desc == 'changed' else
                  d.get('value', d) if isinstance(d, dict) else d)
         res_string = ''
+
         if desc == 'nested':
             res_string = (f"{spaces}  {key}: "
                           f"{get_stylish_line(value, count_spaces + 4)}")
@@ -23,8 +24,10 @@ def get_stylish_line(data, count_spaces=2):
             second_value = (get_stylish_line(value[1], count_spaces + 4) if
                             isinstance(value[1], dict) else
                             value[1])
+
             first_end_trans = '\n' if first_value == value[0] else ''
             second_end_trans = '\n' if second_value == value[1] else ''
+
             res_string = (f"{spaces}{chars['removed']} {key}: "
                           f"{first_value}{first_end_trans}"
                           f"{spaces}{chars['add']} {key}: "
@@ -33,6 +36,7 @@ def get_stylish_line(data, count_spaces=2):
             open_value = (get_stylish_line(value, count_spaces + 4) if
                           isinstance(value, dict) else
                           value)
+
             end_char = ('\n' if open_value == value else '')
             res_string = f"{spaces}{chars[desc]} {key}: {open_value}{end_char}"
         result += res_string

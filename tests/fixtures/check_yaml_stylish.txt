@@ -19,7 +19,7 @@
         }
     }
     group1: {
-      - baz: 0
+      - baz: bas
       + baz: bars
         foo: bar
       - nest: {
