@@ -9,17 +9,17 @@ def get_diff(file1, file2):
         new_value = check_bool_value(file2.get(key))
 
         if isinstance(old_value, dict) and isinstance(new_value, dict):
-            result[key] = {'desc': 'nested',
+            result[key] = {'status': 'nested',
                            'value': get_diff(old_value, new_value)}
         elif key in old_keys and key not in new_keys:
-            result[key] = {'desc': 'removed', 'value': old_value}
+            result[key] = {'status': 'removed', 'value': old_value}
         elif key in new_keys and key not in old_keys:
-            result[key] = {'desc': 'add', 'value': new_value}
+            result[key] = {'status': 'add', 'value': new_value}
         elif key in new_keys and key in old_keys:
             if old_value == new_value:
-                result[key] = {'desc': 'unchanged', 'value': new_value}
+                result[key] = {'status': 'unchanged', 'value': new_value}
             else:
-                result[key] = {'desc': 'changed',
+                result[key] = {'status': 'changed',
                                'old_value': old_value,
                                'new_value': new_value}
     return result
@@ -30,4 +30,6 @@ def check_bool_value(value):
     if isinstance(value, bool):
         string_value = str(value)
         result = string_value[0].lower() + string_value[1:]
+    if value is None:
+        result = 'null'
     return result

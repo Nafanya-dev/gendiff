@@ -1,5 +1,4 @@
 from gendiff import generate_diff
-import yaml
 import pytest
 
 
@@ -22,7 +21,8 @@ def deep_files():
         'first_path_yaml': 'tests/fixtures/file1.yaml',
         'second_path_yaml': 'tests/fixtures/file2.yaml',
         'check_deep_yaml_stylish': open('tests/fixtures/check_yaml_stylish.txt').read(),
-        'check_deep_yaml_plain': open('tests/fixtures/check_yaml_plain.txt').read()
+        'check_deep_yaml_plain': open('tests/fixtures/check_yaml_plain.txt').read(),
+        'check_json_format': open('tests/fixtures/check_json_format.txt').read()
     }
     return paths
 
@@ -38,3 +38,6 @@ def test_generate_diff(flat_files, deep_files):
 
     result_deep_yaml_plain = generate_diff(deep_files['first_path_yaml'], deep_files['second_path_yaml'], 'plain')
     assert result_deep_yaml_plain == deep_files['check_deep_yaml_plain']
+
+    result_json_format = generate_diff(deep_files['first_path_yaml'], deep_files['second_path_yaml'], 'json')
+    assert result_json_format == deep_files['check_json_format']

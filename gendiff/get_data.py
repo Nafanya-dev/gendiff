@@ -3,12 +3,10 @@ import yaml
 
 
 def get_data(path):
+    EXTENSIONS = {'json': parse_json, 'yaml': parse_yaml, 'yml': parse_yaml}
     data = open(path)
-    extensions = {'json': parse_json,
-                  'yaml': parse_yaml,
-                  'yml': parse_yaml}
     key = path.split('.')[1]
-    return extensions[key](data)
+    return EXTENSIONS[key](data)
 
 
 def parse_json(data):
