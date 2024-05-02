@@ -27,13 +27,11 @@ jobs:
           make install
       - name: lint
         run: make lint
-      - name: test
-        run: make pytest
       - name: test & publish code coverage
         uses: paambaati/codeclimate-action@v5.0.0
         if: github.ref_name == 'main'
         env:
-          CC_TEST_REPORTER_ID: 62314e89d0d0a7f0733416c053b2f9d669778624f04abb8368fd8e68fa10fc3d
+          CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
         with:
           coverageCommand: make test-coverage
           debug: true

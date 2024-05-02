@@ -16,6 +16,7 @@ def parse_arguments():
                         help='Path to the second file')
     parser.add_argument("-f", "--format",
                         type=str,
+                        choices=['stylish', 'plain', 'json'],
                         default='stylish',
                         help="set format of output",)
     return parser.parse_args()
