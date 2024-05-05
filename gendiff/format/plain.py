@@ -1,29 +1,20 @@
 def get_plain_line(data, path=''):
     result = ''
     for key, d in data.items():
-        status = (d.get('status', 'unchanged') if
-                  isinstance(d, dict) else
-                  'unchanged')
+        type_ = (d.get('type', 'unchanged') if
+                 isinstance(d, dict) else
+                 'unchanged')
         values = ((d['old_value'], d['new_value']) if
-                  status == 'changed' else
+                  type_ == 'changed' else
                   (d.get('value', d),) if isinstance(d, dict) else (d,))
         values = list(map(lambda v: get_plain_line(v, path + f"{key}.") if
-                      isinstance(v, dict) and status == 'nested' else
-                      '[complex value]' if isinstance(v, dict) else v, values))
+                      isinstance(v, dict) and type_ == 'nested' else
+                      build_correct_value(v), values))
         res_string = ''
-        if status == 'nested':
+        if type_ == 'nested':
             res_string += values[0]
-        elif status == 'changed':
-            old_value = quotes_for_value(values[0])
-            new_value = quotes_for_value(values[1])
-            res_string += (f"Property '{path}{key}' was updated. "
-                           f"From {old_value} to {new_value}")
-        elif status == 'add':
-            value = quotes_for_value(values[0])
-            res_string += (f"Property '{path}{key}' "
-                           f"was added with value: {value}")
-        elif status == 'removed':
-            res_string += f"Property '{path}{key}' was removed"
+        elif type_ != 'unchanged':
+            res_string = build_string(values, path, key, type_)
         else:
             continue
         transfer = '\n' if len(result) > 0 else ''
@@ -31,11 +22,30 @@ def get_plain_line(data, path=''):
     return result
 
 
-def quotes_for_value(value):
-    result = value
-    if (value != '[complex value]' and value != 'true'
-        and value != 'false'
-        and value != 'null'
-            and type(value) is not int):
-        result = f"'{value}'"
+def build_correct_value(value):
+    result = f"'{value}'"
+    if isinstance(value, dict):
+        result = '[complex value]'
+    if isinstance(value, bool):
+        string_value = str(value)
+        result = string_value[0].lower() + string_value[1:]
+    if value is None:
+        result = 'null'
+    if type(value) is int:
+        result = value
+    return result
+
+
+def build_string(values, path, key, type_):
+    result = "Property "
+    if type_ == 'changed':
+        old_value = values[0]
+        new_value = values[1]
+        result += (f"'{path}{key}' was updated. "
+                   f"From {old_value} to {new_value}")
+    elif type_ == 'add':
+        result += (f"'{path}{key}' "
+                   f"was added with value: {values[0]}")
+    else:
+        result += f"'{path}{key}' was removed"
     return result

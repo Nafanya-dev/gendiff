@@ -5,41 +5,48 @@ def get_stylish_line(data, count_spaces=2):
     result = ''
     spaces = ' ' * count_spaces
     for key, d in data.items():
-        status = (d.get('status', 'unchanged') if
-                  isinstance(d, dict) else
-                  'unchanged')
-        value = ((d['old_value'], d['new_value']) if
-                 status == 'changed' else
-                 d.get('value', d) if isinstance(d, dict) else d)
+        type_ = (d.get('type', 'unchanged') if
+                 isinstance(d, dict) else
+                 'unchanged')
+        values = ((d['old_value'], d['new_value']) if
+                  type_ == 'changed' else
+                  d.get('value', d) if isinstance(d, dict) else d)
         res_string = ''
 
-        if status == 'nested':
-            res_string = (f"{spaces}  {key}: "
-                          f"{get_stylish_line(value, count_spaces + 4)}")
-        elif status == 'changed':
-            first_value = (get_stylish_line(value[0], count_spaces + 4) if
-                           isinstance(value[0], dict) else
-                           value[0])
-            second_value = (get_stylish_line(value[1], count_spaces + 4) if
-                            isinstance(value[1], dict) else
-                            value[1])
+        if type_ == 'nested':
+            value = get_stylish_line(values, count_spaces + 4)
+            res_string = build_value(value, key, ' ', spaces)
+        elif type_ == 'changed':
+            first_value = (get_stylish_line(values[0], count_spaces + 4) if
+                           isinstance(values[0], dict) else
+                           values[0])
+            second_value = (get_stylish_line(values[1], count_spaces + 4) if
+                            isinstance(values[1], dict) else
+                            values[1])
 
-            first_end_trans = '\n' if first_value == value[0] else ''
-            second_end_trans = '\n' if second_value == value[1] else ''
-
-            res_string = (f"{spaces}{CHARS['removed']} {key}: "
-                          f"{first_value}{first_end_trans}"
-                          f"{spaces}{CHARS['add']} {key}: "
-                          f"{second_value}{second_end_trans}")
+            res_string = (build_value(first_value, key, CHARS['removed'],
+                                      spaces) + build_value(second_value,
+                                                            key, CHARS['add'],
+                                                            spaces))
         else:
-            open_value = (get_stylish_line(value, count_spaces + 4) if
-                          isinstance(value, dict) else
-                          value)
+            value = (get_stylish_line(values, count_spaces + 4) if
+                     isinstance(values, dict) else
+                     values)
 
-            end_char = ('\n' if open_value == value else '')
-            res_string = (f"{spaces}{CHARS[status]} "
-                          f"{key}: {open_value}{end_char}")
+            res_string = build_value(value, key, CHARS[type_], spaces)
         result += res_string
+
     end_spaces = ' ' * (count_spaces - 2)
-    end_transfer = '' if count_spaces == 2 else '\n'
-    return '{\n' + result + f'{end_spaces}' + '}' + f'{end_transfer}'
+    return '{\n' + result + f'{end_spaces}' + '}'
+
+
+def build_value(value, key, type_char, spaces):
+    result = value
+    end_char = '' if isinstance(value, dict) else '\n'
+
+    if isinstance(value, bool):
+        string_value = str(value)
+        result = string_value[0].lower() + string_value[1:]
+    if value is None:
+        result = 'null'
+    return f"{spaces}{type_char} {key}: {result}{end_char}"
