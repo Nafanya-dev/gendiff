@@ -23,7 +23,7 @@
 ### Package installation:
 
 ```bash
->> git clone https://github.com/Nafanya-dev/python-project-50.git
+>> git clone https://github.com/Nafanya-dev/gendiff.git && cd gendiff
 ```
 
 Then you have to build the package and install it:
